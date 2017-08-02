@@ -83,6 +83,12 @@ defmodule Ex2ms do
     {Enum.map(list, &translate_cond(&1, state)) |> List.to_tuple}
   end
 
+  defp translate_cond({:%{}, _, list}, state) when is_list(list) do
+    Map.new(list, fn {key, value} ->
+      {translate_cond(key, state), translate_cond(value, state)}
+    end)
+  end
+
   defp translate_cond({:^, _, [var]}, _state) do
     {:unquote, [], [var]}
   end
